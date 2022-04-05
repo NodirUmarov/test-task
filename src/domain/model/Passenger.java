@@ -8,6 +8,9 @@ public class Passenger implements Comparable<Passenger> {
     private int currentFloor;
     private Direction direction;
 
+    public Passenger() {
+    }
+
     public Passenger(int floorToGo, int currentFloor, Direction direction) {
         this.floorToGo = floorToGo;
         this.currentFloor = currentFloor;
@@ -32,7 +35,9 @@ public class Passenger implements Comparable<Passenger> {
 
     @Override
     public int compareTo(Passenger other) {
-        return Integer.compare(other.floorToGo, this.floorToGo);
+        return direction == Direction.UP ?
+                Integer.compare(this.floorToGo, other.floorToGo) :
+                Integer.compare(other.floorToGo, this.floorToGo);
     }
 
     public Direction getDirection() {

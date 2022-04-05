@@ -18,7 +18,7 @@ public class Elevator {
         this.currentMaxCapacity = currentMaxCapacity;
         this.passengers = passengers;
 
-        direction = Direction.WAITING;
+        direction = Direction.UP;
     }
 
     public int getTopFloor() {

@@ -2,6 +2,7 @@ package domain.model.builder;
 
 import domain.model.Elevator;
 import domain.model.Passenger;
+import domain.model.request.CreateBuildingRequest;
 
 import java.util.Queue;
 
@@ -22,22 +23,22 @@ public class ElevatorBuilder {
         return new Elevator(topFloor, currentFloor, currentMaxCapacity, passengers);
     }
 
-    public ElevatorBuilder setTopFloor(int topFloor) {
+    public ElevatorBuilder topFloor(int topFloor) {
         this.topFloor = topFloor;
         return this;
     }
 
-    public ElevatorBuilder setCurrentFloor(int currentFloor) {
+    public ElevatorBuilder currentFloor(int currentFloor) {
         this.currentFloor = currentFloor;
         return this;
     }
 
-    public ElevatorBuilder setCurrentMaxCapacity(int currentMaxCapacity) {
+    public ElevatorBuilder currentMaxCapacity(int currentMaxCapacity) {
         this.currentMaxCapacity = currentMaxCapacity;
         return this;
     }
 
-    public ElevatorBuilder setPassengers(Queue<Passenger> passengers) {
+    public ElevatorBuilder passengers(Queue<Passenger> passengers) {
         this.passengers = passengers;
         return this;
     }
