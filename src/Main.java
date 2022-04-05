@@ -14,85 +14,27 @@ public class Main {
         BuildingService buildingService = ServiceFactory.getBuildingService();
         Building building = buildingService.create(new CreateBuildingRequest(20, 8));
 
-        ElevatorService elevatorService = ServiceFactory.getElevatorService(buildingService);
+        ElevatorService elevatorService = ServiceFactory.getElevatorService();
         elevatorService.nextFloor();
 
-        Queue<Passenger> passengers = elevatorService.getCurrentElevator().getPassengers();
-
-        System.out.println(elevatorService.getCurrentElevator());
-        while (!passengers.isEmpty()) {
-            System.out.println(passengers.poll());
-        }
-        System.out.println();
+        buildingService.print();
 
         elevatorService.nextFloor();
-
-        passengers = elevatorService.getCurrentElevator().getPassengers();
-
-        System.out.println(elevatorService.getCurrentElevator());
-        while (!passengers.isEmpty()) {
-            System.out.println(passengers.poll());
-        }
-        System.out.println();
+        buildingService.print();
 
         elevatorService.nextFloor();
-
-        passengers = elevatorService.getCurrentElevator().getPassengers();
-
-        System.out.println(elevatorService.getCurrentElevator());
-        while (!passengers.isEmpty()) {
-            System.out.println(passengers.poll());
-        }
-        System.out.println();
+        buildingService.print();
 
         elevatorService.nextFloor();
-
-        passengers = elevatorService.getCurrentElevator().getPassengers();
-
-        System.out.println(elevatorService.getCurrentElevator());
-        while (!passengers.isEmpty()) {
-            System.out.println(passengers.poll());
-        }
-        System.out.println();
+        buildingService.print();
 
         elevatorService.nextFloor();
-
-        passengers = elevatorService.getCurrentElevator().getPassengers();
-
-        System.out.println(elevatorService.getCurrentElevator());
-        while (!passengers.isEmpty()) {
-            System.out.println(passengers.poll());
-        }
-        System.out.println();
+        buildingService.print();
 
         elevatorService.nextFloor();
-
-        passengers = elevatorService.getCurrentElevator().getPassengers();
-
-        System.out.println(elevatorService.getCurrentElevator());
-        while (!passengers.isEmpty()) {
-            System.out.println(passengers.poll());
-        }
-        System.out.println();
+        buildingService.print();
 
         elevatorService.nextFloor();
-
-        passengers = elevatorService.getCurrentElevator().getPassengers();
-
-        System.out.println(elevatorService.getCurrentElevator());
-        while (!passengers.isEmpty()) {
-            System.out.println(passengers.poll());
-        }
-        System.out.println();
-
-        elevatorService.nextFloor();
-
-        passengers = elevatorService.getCurrentElevator().getPassengers();
-
-        System.out.println(elevatorService.getCurrentElevator());
-        while (!passengers.isEmpty()) {
-            System.out.println(passengers.poll());
-        }
-        System.out.println();
+        buildingService.print();
     }
 }

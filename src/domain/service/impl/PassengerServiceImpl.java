@@ -3,7 +3,6 @@ package domain.service.impl;
 import domain.model.Building;
 import domain.model.Passenger;
 import domain.model.enums.Direction;
-import domain.model.request.CreateBuildingRequest;
 import domain.service.BuildingService;
 import domain.service.PassengerService;
 import domain.util.RandomGenerator;
@@ -11,6 +10,9 @@ import domain.util.RandomGenerator;
 public class PassengerServiceImpl implements PassengerService {
 
     private BuildingService buildingService;
+
+    public PassengerServiceImpl() {
+    }
 
     public PassengerServiceImpl(BuildingService buildingService) {
         this.buildingService = buildingService;

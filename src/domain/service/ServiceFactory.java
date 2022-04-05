@@ -6,22 +6,31 @@ import domain.service.impl.PassengerServiceImpl;
 
 public final class ServiceFactory {
 
-    private static BuildingService buildingService;
-    private static ElevatorService elevatorService;
-    private static PassengerService passengerService;
+    private static final BuildingService buildingService;
+    private static final ElevatorService elevatorService;
+    private static final PassengerService passengerService;
+
+    static {
+        buildingService = new BuildingServiceImpl();
+        passengerService = new PassengerServiceImpl(buildingService);
+        elevatorService = new ElevatorServiceImpl(buildingService, passengerService);
+
+        buildingService.setElevatorService(elevatorService);
+        buildingService.setPassengerService(passengerService);
+    }
 
     private ServiceFactory() {}
 
     public static BuildingService getBuildingService() {
-        return buildingService == null ? buildingService = new BuildingServiceImpl() : buildingService;
+        return buildingService;
     }
 
-    public static ElevatorService getElevatorService(BuildingService buildingService) {
-        return elevatorService == null ? elevatorService = new ElevatorServiceImpl(buildingService) : elevatorService;
+    public static ElevatorService getElevatorService() {
+        return elevatorService;
     }
 
-    public static PassengerService getPassengerService(BuildingService buildingService) {
-        return passengerService == null ? passengerService = new PassengerServiceImpl(buildingService) : passengerService;
+    public static PassengerService getPassengerService() {
+        return passengerService;
     }
 
 

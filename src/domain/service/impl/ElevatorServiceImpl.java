@@ -6,20 +6,28 @@ import domain.model.builder.ElevatorBuilder;
 import domain.model.enums.Direction;
 import domain.service.BuildingService;
 import domain.service.ElevatorService;
+import domain.service.PassengerService;
+import domain.service.ServiceFactory;
 
 import java.util.*;
 
 public class ElevatorServiceImpl implements ElevatorService {
 
     private BuildingService buildingService;
+    private PassengerService passengerService;
     private Elevator elevator;
 
-    public ElevatorServiceImpl(BuildingService buildingService) {
+    public ElevatorServiceImpl() {
+    }
+
+    public ElevatorServiceImpl(BuildingService buildingService, PassengerService passengerService) {
         this.buildingService = buildingService;
+        this.passengerService = passengerService;
     }
 
     @Override
     public Elevator create(int capacity) {
+        checkCapacity(capacity);
         PriorityQueue<Passenger> passengers = new PriorityQueue<>();
 
         return elevator = ElevatorBuilder
@@ -92,8 +100,15 @@ public class ElevatorServiceImpl implements ElevatorService {
                 break;
             }
             if (passengers.peek().getFloorToGo() == elevator.getCurrentFloor()) {
-                passengers.poll();
+                Passenger passenger = passengerService.changePassengerFloor(passengers.poll());
+                buildingService.getCurrentBuilding().getFloorsWithPassengers().get(elevator.getCurrentFloor()).add(passenger);
             }
+        }
+    }
+
+    private void checkCapacity(int capacity) {
+        if (capacity < 1 || capacity > 8) {
+            throw new IllegalArgumentException("Elevator capacity from 1 to 8");
         }
     }
 
