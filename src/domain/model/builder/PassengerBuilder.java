@@ -1,13 +1,15 @@
 package domain.model.builder;
 
+import domain.model.Floor;
 import domain.model.Passenger;
 import domain.model.enums.Direction;
-import domain.model.request.CreateBuildingRequest;
 
 public class PassengerBuilder {
 
-    private int floorToGo;
-    private int currentFloor;
+    private Long id;
+    private String name;
+    private Floor floorToGo;
+    private Floor currentFloor;
     private Direction direction;
 
     private PassengerBuilder() {}
@@ -17,15 +19,25 @@ public class PassengerBuilder {
     }
 
     public Passenger build() {
-        return new Passenger(floorToGo, currentFloor, direction);
+        return new Passenger(id, name, floorToGo, currentFloor, direction);
     }
 
-    public PassengerBuilder floorToGo(int floorToGo) {
+    public PassengerBuilder name(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public PassengerBuilder id(Long id) {
+        this.id = id;
+        return this;
+    }
+
+    public PassengerBuilder floorToGo(Floor floorToGo) {
         this.floorToGo = floorToGo;
         return this;
     }
 
-    public PassengerBuilder currentFloor(int currentFloor) {
+    public PassengerBuilder currentFloor(Floor currentFloor) {
         this.currentFloor = currentFloor;
         return this;
     }

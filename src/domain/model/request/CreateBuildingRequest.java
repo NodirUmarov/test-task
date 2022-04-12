@@ -1,35 +1,58 @@
 package domain.model.request;
 
 public class CreateBuildingRequest {
-    private int floorsNumber;
-    private int elevatorMaxCapacity;
 
-    public CreateBuildingRequest(int floorsNumber, int elevatorMaxCapacity) {
-        this.floorsNumber = floorsNumber;
-        this.elevatorMaxCapacity = elevatorMaxCapacity;
+    private String name;
+    private Integer topFloor;
+    private Integer elevators;
+    private Integer elevatorCapacity;
+
+    public CreateBuildingRequest(String name, Integer topFloor, Integer elevators, Integer elevatorCapacity) {
+        this.name = name;
+        this.topFloor = topFloor;
+        this.elevators = elevators;
+        this.elevatorCapacity = elevatorCapacity;
     }
 
-    public int getFloorsNumber() {
-        return floorsNumber;
+    public String getName() {
+        return name;
     }
 
-    public void setFloorsNumber(int floorsNumber) {
-        this.floorsNumber = floorsNumber;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public int getElevatorMaxCapacity() {
-        return elevatorMaxCapacity;
+    public Integer getTopFloor() {
+        return topFloor;
     }
 
-    public void setElevatorMaxCapacity(int elevatorMaxCapacity) {
-        this.elevatorMaxCapacity = elevatorMaxCapacity;
+    public void setTopFloor(Integer topFloor) {
+        this.topFloor = topFloor;
+    }
+
+    public Integer getElevators() {
+        return elevators;
+    }
+
+    public void setElevators(Integer elevators) {
+        this.elevators = elevators;
+    }
+
+    public Integer getElevatorCapacity() {
+        return elevatorCapacity;
+    }
+
+    public void setElevatorCapacity(Integer elevatorCapacity) {
+        this.elevatorCapacity = elevatorCapacity;
     }
 
     @Override
     public String toString() {
         return "CreateBuildingRequest{" +
-                "floorsNumber=" + floorsNumber +
-                ", elevatorMaxCapacity=" + elevatorMaxCapacity +
+                "name='" + name + '\'' +
+                ", topFloor=" + topFloor +
+                ", elevators=" + elevators +
+                ", elevatorCapacity=" + elevatorCapacity +
                 '}';
     }
 }

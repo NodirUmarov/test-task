@@ -1,104 +1,95 @@
 package domain.service.impl;
 
+import domain.config.ApplicationContext;
+import domain.dao.BuildingDao;
 import domain.model.Building;
+import domain.model.Elevator;
+import domain.model.Floor;
 import domain.model.Passenger;
+import domain.model.builder.BuildingBuilder;
+import domain.model.builder.ElevatorBuilder;
+import domain.model.builder.FloorBuilder;
+import domain.model.builder.PassengerBuilder;
 import domain.model.enums.Direction;
 import domain.model.request.CreateBuildingRequest;
 import domain.service.BuildingService;
 import domain.service.ElevatorService;
+import domain.service.FloorService;
 import domain.service.PassengerService;
-import domain.service.ServiceFactory;
 import domain.util.RandomGenerator;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
-import java.util.stream.Collectors;
+import java.util.*;
 
 public class BuildingServiceImpl implements BuildingService {
 
-    private Building building;
-
-    private PassengerService passengerService;
+    private BuildingDao buildingDao;
     private ElevatorService elevatorService;
+    private FloorService floorService;
+    private PassengerService passengerService;
 
     public BuildingServiceImpl() {
-    }
-
-    public BuildingServiceImpl(PassengerService passengerService, ElevatorService elevatorService) {
-        this.passengerService = passengerService;
-        this.elevatorService = elevatorService;
+        this.buildingDao = ApplicationContext.getBean("buildingDao", BuildingDao.class);
+        this.elevatorService = ApplicationContext.getBean("elevatorService", ElevatorService.class);
+        this.floorService = ApplicationContext.getBean("floorService", FloorService.class);
+        this.passengerService = ApplicationContext.getBean("passengerService", PassengerService.class);
     }
 
     @Override
     public Building create(CreateBuildingRequest request) {
-        checkFloors(request.getFloorsNumber());
-        List<Queue<Passenger>> floors = new ArrayList<>(request.getFloorsNumber());
+        LinkedList<Floor> floors = new LinkedList<>();
 
-        building = new Building(request.getFloorsNumber(), floors);
+        for (int floorNumber = 1; floorNumber <= request.getTopFloor(); floorNumber++) {
+            Floor floor = FloorBuilder
+                    .builder()
+                    .passengers(new ArrayDeque<>())
+                    .floorNumber(floorNumber)
+                    .build();
+            floors.add(floorService.create(floor));
+        }
 
-        for (int i = 0; i < request.getFloorsNumber(); i++) {
+        for (int floorNumber = 0; floorNumber < floors.size(); floorNumber++) {
+            Floor currentFloor = floors.get(floorNumber);
 
-            Queue<Passenger> passengerQueue = new ArrayDeque<>();
-            int passengersCount = RandomGenerator.getRandom(0, 11);
+            int passengersOnFloor = RandomGenerator.getRandom(0, 11);
 
-            for (int j = 0; j < passengersCount; j++) {
-                int currentFloor = i + 1;
-                passengerQueue.offer(passengerService.create(currentFloor));
+            for (int passengerCount = 0; passengerCount < passengersOnFloor; passengerCount++) {
+
+                Direction direction = Direction.values()[RandomGenerator.getRandom(0, 2)];
+                Floor floorToGo = floors.get(RandomGenerator.getRandomWithExclusion(0, request.getTopFloor(), floorNumber));
+
+                Passenger passenger = PassengerBuilder
+                        .builder()
+                        .direction(direction)
+                        .name(RandomGenerator.getRandomName())
+                        .currentFloor(currentFloor)
+                        .floorToGo(floorToGo)
+                        .build();
+
+                currentFloor.getPassengers().add(passengerService.create(passenger));
             }
-            floors.add(passengerQueue);
-            building.setElevator(elevatorService.create(request.getElevatorMaxCapacity()));
         }
-        return building;
+        Elevator elevator = ElevatorBuilder
+                .builder()
+                .capacity(request.getElevatorCapacity())
+                .currentFloor(floors.getFirst())
+                .passengers(new PriorityQueue<>())
+                .build();
+
+        elevatorService.create(elevator);
+
+        Building building = BuildingBuilder
+                .builder()
+                .floorsWithPassengers(floors)
+                .elevator(elevator)
+                .name(request.getName())
+                .topFloor(request.getTopFloor())
+                .build();
+
+        return buildingDao.save(building);
     }
 
-    private void checkFloors(int floorsNumber) {
-        if (floorsNumber > 20 || floorsNumber < 5) {
-            throw new IllegalArgumentException("Building can have from 5 to 20 floors");
-        }
-    }
-
-    public Building getCurrentBuilding() {
-        return building;
-    }
-
-    public void print() {
-        System.out.println("Elevator has reached next floor");
-        String elevatorData = elevatorService
-                .getCurrentElevator()
-                .getPassengers()
-                .stream()
-                .map(passenger -> passenger.getDirection().name().charAt(0) + String.valueOf(passenger.getFloorToGo()))
-                .collect(Collectors.joining(" "));
-
-        if (elevatorService.getCurrentElevator().getDirection().equals(Direction.UP)) {
-            elevatorData = "^ " + elevatorData + " ^";
-        }
-        else {
-            elevatorData = "v " + elevatorData + " v";
-        }
-
-        for (int i = building.getFloors(); i > 0; i--) {
-            String floorData = building
-                    .getFloorsWithPassengers()
-                    .get(i - 1).stream()
-                    .map(passenger -> passenger.getDirection().name().charAt(0) + String.valueOf(passenger.getFloorToGo()))
-                    .collect(Collectors.joining(" "));
-
-            boolean elevatorAtThisLevel = building.getElevator().getCurrentFloor() == i;
-
-            System.out.printf("" +
-                    "%2d|%s|%-10s%n", i, elevatorAtThisLevel ? elevatorData : elevatorData.replaceAll(".", " "), floorData);
-        }
-        System.out.println();
-    }
-
-    public void setPassengerService(PassengerService passengerService) {
-        this.passengerService = passengerService;
-    }
-
-    public void setElevatorService(ElevatorService elevatorService) {
-        this.elevatorService = elevatorService;
+    @Override
+    public Building findByName(String name) {
+        return null;
     }
 }
