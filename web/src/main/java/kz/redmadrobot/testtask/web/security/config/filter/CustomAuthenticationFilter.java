@@ -8,9 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.stream.Collectors;
 import kz.redmadrobot.testtask.web.security.details.AuthenticationDetails;
 import kz.redmadrobot.testtask.web.security.details.AuthenticationDetailsService;
 import kz.redmadrobot.testtask.web.security.details.TokenResponse;
@@ -24,9 +22,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Component;
 
+@Component
 @RequiredArgsConstructor
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -34,6 +33,13 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
     private String secret;
     private Long duration;
+
+    @Autowired
+    public CustomAuthenticationFilter(@Lazy AuthenticationManager authenticationManager, AuthenticationDetailsService authenticationDetailsService) {
+        super(authenticationManager);
+        this.authenticationDetailsService = authenticationDetailsService;
+        this.setFilterProcessesUrl("/api/login");
+    }
 
     @Value("${jwt.secret}")
     public void setSecret(String secret) {
@@ -43,13 +49,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Value("${jwt.duration}")
     public void setDuration(Long duration) {
         this.duration = duration;
-    }
-
-    @Autowired
-    public CustomAuthenticationFilter(@Lazy AuthenticationManager authenticationManager, AuthenticationDetailsService authenticationDetailsService) {
-        super(authenticationManager);
-        this.authenticationDetailsService = authenticationDetailsService;
-        this.setFilterProcessesUrl("/api/login");
     }
 
     @Override
@@ -73,7 +72,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 .withNotBefore(new Date())
                 .withIssuer(request.getRequestURL().toString())
                 .withExpiresAt(new Date(System.currentTimeMillis() + duration))
-                .withClaim("authorities", new ArrayList<>(details.getAuthorities()))
+                .withClaim("authorities", details.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority).toList())
                 .withClaim("type_of_token", "access")
                 .sign(algorithm);
 
@@ -83,7 +83,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 .withNotBefore(new Date(System.currentTimeMillis() + duration))
                 .withIssuer(request.getRequestURL().toString())
                 .withExpiresAt(new Date(System.currentTimeMillis() + duration * 2))
-                .withClaim("authorities", new ArrayList<>(details.getAuthorities()))
+                .withClaim("authorities", details.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority).toList())
                 .withClaim("type_of_token", "refresh")
                 .sign(algorithm);
 

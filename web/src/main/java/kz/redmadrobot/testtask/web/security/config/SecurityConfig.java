@@ -3,10 +3,13 @@ package kz.redmadrobot.testtask.web.security.config;
 import java.util.Arrays;
 import java.util.List;
 import kz.redmadrobot.testtask.web.security.config.filter.CustomAuthenticationFilter;
+import kz.redmadrobot.testtask.web.security.config.filter.CustomAuthorizationFilter;
+import kz.redmadrobot.testtask.web.security.details.AuthenticationDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -30,10 +33,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     private final PasswordEncoder passwordEncoder;
-    private final UserDetailsService userDetailsService;
+    private final AuthenticationDetailsService authenticationDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
 
     private final CustomAuthenticationFilter authenticationFilter;
+    private final CustomAuthorizationFilter authorizationFilter;
 
     private List<String> allowedOrigins;
     private List<String> allowedHeaders;
@@ -64,8 +68,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .cors().and().csrf().disable()
-                .authorizeHttpRequests().anyRequest().authenticated()
+                .authorizeHttpRequests()
+                .requestMatchers(HttpMethod.POST, "/api/v1/user").permitAll()
+                .anyRequest().authenticated()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        httpSecurity.addFilter(authenticationFilter);
+        httpSecurity.addFilterBefore(authorizationFilter, CustomAuthenticationFilter.class);
 
         return httpSecurity.build();
     }
@@ -73,7 +82,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService);
+        provider.setUserDetailsService(authenticationDetailsService);
         provider.setPasswordEncoder(passwordEncoder);
         return provider;
     }
@@ -93,10 +102,4 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager() throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
-    }
-
 }

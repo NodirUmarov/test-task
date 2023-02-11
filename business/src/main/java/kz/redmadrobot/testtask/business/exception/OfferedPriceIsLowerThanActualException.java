@@ -1,4 +1,4 @@
-package kz.redmadrobot.testtask.business.service.impl;
+package kz.redmadrobot.testtask.business.exception;
 
 public class OfferedPriceIsLowerThanActualException extends RuntimeException {
 }

@@ -21,7 +21,7 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "tb_users")
+@Table(name = "tb_roles")
 @AuditTable("tb_roles_audit")
 public class Role extends AbstractPersistable<Long> {
 

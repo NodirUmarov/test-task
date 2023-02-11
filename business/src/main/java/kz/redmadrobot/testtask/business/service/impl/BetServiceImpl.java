@@ -1,9 +1,9 @@
 package kz.redmadrobot.testtask.business.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import kz.redmadrobot.testtask.business.exception.AdIsWithdrawnException;
 import kz.redmadrobot.testtask.business.exception.AdNotFoundException;
+import kz.redmadrobot.testtask.business.exception.OfferedPriceIsLowerThanActualException;
 import kz.redmadrobot.testtask.business.exception.UserNotFoundException;
 import kz.redmadrobot.testtask.business.mapper.CreateBetMapper;
 import kz.redmadrobot.testtask.business.mapper.dto.BetMapper;
