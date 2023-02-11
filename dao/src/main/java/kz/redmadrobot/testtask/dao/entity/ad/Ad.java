@@ -48,7 +48,7 @@ public class Ad extends AbstractAuditable<User, Long> {
     @Column(length = 1000)
     private byte[] imageData;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime until;
 
 }

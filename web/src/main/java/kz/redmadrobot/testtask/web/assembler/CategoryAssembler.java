@@ -27,7 +27,7 @@ public class CategoryAssembler extends RepresentationModelAssemblerSupport<Categ
         categoryResource.setName(dto.name());
         categoryResource.setCreatedDate(dto.createdDate());
         categoryResource.setParentCategory(toModel(dto.parentCategory()));
-        categoryResource.setCreatedBy(userAssembler.toModel(dto.createdBy()));
+//        categoryResource.setCreatedBy(userAssembler.toModel(dto.createdBy()));
         return categoryResource;
     }
 }
