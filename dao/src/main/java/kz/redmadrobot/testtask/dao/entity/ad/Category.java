@@ -16,9 +16,7 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Entity
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "tb_categories")
 public class Category extends AbstractPersistable<Long> {
 

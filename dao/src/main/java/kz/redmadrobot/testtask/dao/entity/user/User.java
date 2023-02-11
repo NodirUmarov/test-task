@@ -27,16 +27,16 @@ public class User extends AbstractPersistable<Long> {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column
     private String firstName;
 
-    @Column(nullable = false)
+    @Column
     private String lastName;
 
     @Column
     private String patronymic;
 
-    @Column(nullable = false)
+    @Column
     private LocalDate dob;
 
 }

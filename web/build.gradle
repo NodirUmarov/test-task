@@ -6,6 +6,9 @@ plugins {
 
 group 'kz.redmadrobot.testtask.web'
 
+sourceCompatibility=javaVersion
+targetCompatibility=javaVersion
+
 repositories {
     mavenCentral()
 }
@@ -14,8 +17,10 @@ dependencies {
     implementation project(":business")
     implementation "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
     implementation "org.springframework.boot:spring-boot-starter-hateoas:$springBootVersion"
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
     testImplementation "com.h2database:h2:2.1.214"
     implementation "org.postgresql:postgresql:42.5.1"
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
 test {

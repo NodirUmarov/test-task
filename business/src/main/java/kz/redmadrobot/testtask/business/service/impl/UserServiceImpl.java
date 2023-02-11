@@ -1,7 +1,10 @@
 package kz.redmadrobot.testtask.business.service.impl;
 
+import kz.redmadrobot.testtask.business.exception.UserNotFoundException;
 import kz.redmadrobot.testtask.business.mapper.dto.UserMapper;
+import kz.redmadrobot.testtask.business.mapper.request.CreateUserMapper;
 import kz.redmadrobot.testtask.business.model.dto.user.UserDto;
+import kz.redmadrobot.testtask.business.model.request.CreateUserRequest;
 import kz.redmadrobot.testtask.business.service.UserService;
 import kz.redmadrobot.testtask.dao.entity.user.User;
 import kz.redmadrobot.testtask.dao.repository.UserRepository;
@@ -16,12 +19,13 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final CreateUserMapper createUserMapper;
 
     @Override
-    public UserDto create(UserDto userDto) {
-        log.info("Creating new user with email: {}", userDto.email());
+    public UserDto create(CreateUserRequest request) {
+        log.info("Creating new user with email: {}", request.getEmail());
 
-        User user = userRepository.save(userMapper.toEntity(userDto));
+        User user = userRepository.save(createUserMapper.toEntity(request));
 
         log.info("User with email {} created and id={} assigned", user.getEmail(), user.getId());
         return userMapper.toDto(user);
@@ -30,6 +34,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getOne(Long id) {
         log.info("Searching for user by id={}", id);
-        return userMapper.toDto(userRepository.findById(id).orElse(new User()));
+        return userMapper.toDto(userRepository.findById(id).orElseThrow(UserNotFoundException::new));
     }
+
+
+
 }

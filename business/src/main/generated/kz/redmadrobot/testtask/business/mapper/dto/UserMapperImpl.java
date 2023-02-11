@@ -10,18 +10,19 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-02-11T05:09:17+0500",
+    date = "2023-02-11T13:03:43+0500",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 17.0.6 (Oracle Corporation)"
 )
 @Component
 public class UserMapperImpl implements UserMapper {
 
     @Override
-    public UserDto toDto(User entity) {
-        if ( entity == null ) {
+    public UserDto toDto(User arg0) {
+        if ( arg0 == null ) {
             return null;
         }
 
+        Long id = null;
         String email = null;
         String password = null;
         String firstName = null;
@@ -29,26 +30,27 @@ public class UserMapperImpl implements UserMapper {
         String patronymic = null;
         LocalDate dob = null;
 
-        email = entity.getEmail();
-        password = entity.getPassword();
-        firstName = entity.getFirstName();
-        lastName = entity.getLastName();
-        patronymic = entity.getPatronymic();
-        dob = entity.getDob();
+        id = arg0.getId();
+        email = arg0.getEmail();
+        password = arg0.getPassword();
+        firstName = arg0.getFirstName();
+        lastName = arg0.getLastName();
+        patronymic = arg0.getPatronymic();
+        dob = arg0.getDob();
 
-        UserDto userDto = new UserDto( email, password, firstName, lastName, patronymic, dob );
+        UserDto userDto = new UserDto( id, email, password, firstName, lastName, patronymic, dob );
 
         return userDto;
     }
 
     @Override
-    public List<UserDto> toDtoList(List<User> entityList) {
-        if ( entityList == null ) {
+    public List<UserDto> toDtoList(List<User> arg0) {
+        if ( arg0 == null ) {
             return null;
         }
 
-        List<UserDto> list = new ArrayList<UserDto>( entityList.size() );
-        for ( User user : entityList ) {
+        List<UserDto> list = new ArrayList<UserDto>( arg0.size() );
+        for ( User user : arg0 ) {
             list.add( toDto( user ) );
         }
 
@@ -56,31 +58,31 @@ public class UserMapperImpl implements UserMapper {
     }
 
     @Override
-    public User toEntity(UserDto dto) {
-        if ( dto == null ) {
+    public User toEntity(UserDto arg0) {
+        if ( arg0 == null ) {
             return null;
         }
 
         User.UserBuilder user = User.builder();
 
-        user.email( dto.email() );
-        user.password( dto.password() );
-        user.firstName( dto.firstName() );
-        user.lastName( dto.lastName() );
-        user.patronymic( dto.patronymic() );
-        user.dob( dto.dob() );
+        user.email( arg0.email() );
+        user.password( arg0.password() );
+        user.firstName( arg0.firstName() );
+        user.lastName( arg0.lastName() );
+        user.patronymic( arg0.patronymic() );
+        user.dob( arg0.dob() );
 
         return user.build();
     }
 
     @Override
-    public List<User> toEntityList(List<UserDto> dtoList) {
-        if ( dtoList == null ) {
+    public List<User> toEntityList(List<UserDto> arg0) {
+        if ( arg0 == null ) {
             return null;
         }
 
-        List<User> list = new ArrayList<User>( dtoList.size() );
-        for ( UserDto userDto : dtoList ) {
+        List<User> list = new ArrayList<User>( arg0.size() );
+        for ( UserDto userDto : arg0 ) {
             list.add( toEntity( userDto ) );
         }
 

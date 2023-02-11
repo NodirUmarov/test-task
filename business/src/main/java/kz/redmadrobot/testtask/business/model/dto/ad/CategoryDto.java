@@ -1,4 +1,7 @@
 package kz.redmadrobot.testtask.business.model.dto.ad;
 
-public record CategoryDto(String name, CategoryDto parentCategory) {
+import java.time.LocalDateTime;
+import kz.redmadrobot.testtask.business.model.dto.user.UserDto;
+
+public record CategoryDto(Long id, String name, CategoryDto parentCategory, UserDto createdBy, LocalDateTime createdDate) {
 }

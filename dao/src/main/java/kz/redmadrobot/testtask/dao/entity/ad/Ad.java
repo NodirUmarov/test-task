@@ -7,6 +7,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import kz.redmadrobot.testtask.dao.entity.enums.AdStatus;
 import kz.redmadrobot.testtask.dao.entity.user.User;
 import lombok.AllArgsConstructor;
@@ -46,5 +47,8 @@ public class Ad extends AbstractAuditable<User, Long> {
     @Lob
     @Column(length = 1000)
     private byte[] imageData;
+
+    @Column(nullable = false)
+    private LocalDateTime until;
 
 }

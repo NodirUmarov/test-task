@@ -20,11 +20,4 @@ public interface DtoMapper<T, S> {
      */
     S toDto(T entity);
 
-    /**
-     * This method maps passed as argument {@link Set} of entities to {@link Set} of dtos.
-     *
-     * @param entityList must not be null
-     * @return mapped {@link Set} of dtos
-     */
-    List<S> toDtoList(List<T> entityList);
 }

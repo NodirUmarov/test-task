@@ -1,6 +1,7 @@
 package kz.redmadrobot.testtask.business.mapper.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,23 +10,28 @@ import kz.redmadrobot.testtask.business.model.dto.ad.AdDto;
 import kz.redmadrobot.testtask.business.model.dto.ad.BetDto;
 import kz.redmadrobot.testtask.business.model.dto.ad.CategoryDto;
 import kz.redmadrobot.testtask.business.model.dto.enums.AdStatusDto;
+import kz.redmadrobot.testtask.business.model.dto.user.UserDto;
 import kz.redmadrobot.testtask.dao.entity.ad.Ad;
 import kz.redmadrobot.testtask.dao.entity.ad.Bet;
 import kz.redmadrobot.testtask.dao.entity.ad.Category;
 import kz.redmadrobot.testtask.dao.entity.enums.AdStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-02-11T05:09:16+0500",
+    date = "2023-02-11T13:03:43+0500",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 17.0.6 (Oracle Corporation)"
 )
 @Component
 public class BetMapperImpl implements BetMapper {
 
+    @Autowired
+    private UserMapper userMapper;
+
     @Override
-    public BetDto toDto(Bet entity) {
-        if ( entity == null ) {
+    public BetDto toDto(Bet arg0) {
+        if ( arg0 == null ) {
             return null;
         }
 
@@ -33,9 +39,9 @@ public class BetMapperImpl implements BetMapper {
         BigDecimal offeredPrice = null;
         Boolean isPrimary = null;
 
-        ad = adToAdDto( entity.getAd() );
-        offeredPrice = entity.getOfferedPrice();
-        isPrimary = entity.getIsPrimary();
+        ad = adToAdDto( arg0.getAd() );
+        offeredPrice = arg0.getOfferedPrice();
+        isPrimary = arg0.getIsPrimary();
 
         BetDto betDto = new BetDto( ad, offeredPrice, isPrimary );
 
@@ -43,13 +49,13 @@ public class BetMapperImpl implements BetMapper {
     }
 
     @Override
-    public List<BetDto> toDtoList(List<Bet> entityList) {
-        if ( entityList == null ) {
+    public List<BetDto> toDtoList(List<Bet> arg0) {
+        if ( arg0 == null ) {
             return null;
         }
 
-        List<BetDto> list = new ArrayList<BetDto>( entityList.size() );
-        for ( Bet bet : entityList ) {
+        List<BetDto> list = new ArrayList<BetDto>( arg0.size() );
+        for ( Bet bet : arg0 ) {
             list.add( toDto( bet ) );
         }
 
@@ -57,28 +63,28 @@ public class BetMapperImpl implements BetMapper {
     }
 
     @Override
-    public Bet toEntity(BetDto dto) {
-        if ( dto == null ) {
+    public Bet toEntity(BetDto arg0) {
+        if ( arg0 == null ) {
             return null;
         }
 
         Bet.BetBuilder bet = Bet.builder();
 
-        bet.ad( adDtoToAd( dto.ad() ) );
-        bet.offeredPrice( dto.offeredPrice() );
-        bet.isPrimary( dto.isPrimary() );
+        bet.ad( adDtoToAd( arg0.ad() ) );
+        bet.offeredPrice( arg0.offeredPrice() );
+        bet.isPrimary( arg0.isPrimary() );
 
         return bet.build();
     }
 
     @Override
-    public List<Bet> toEntityList(List<BetDto> dtoList) {
-        if ( dtoList == null ) {
+    public List<Bet> toEntityList(List<BetDto> arg0) {
+        if ( arg0 == null ) {
             return null;
         }
 
-        List<Bet> list = new ArrayList<Bet>( dtoList.size() );
-        for ( BetDto betDto : dtoList ) {
+        List<Bet> list = new ArrayList<Bet>( arg0.size() );
+        for ( BetDto betDto : arg0 ) {
             list.add( toEntity( betDto ) );
         }
 
@@ -130,6 +136,8 @@ public class BetMapperImpl implements BetMapper {
         AdStatusDto adStatus = null;
         CategoryDto category = null;
         byte[] imageData = null;
+        UserDto createdBy = null;
+        LocalDateTime createdDate = null;
 
         title = ad.getTitle();
         description = ad.getDescription();
@@ -140,8 +148,10 @@ public class BetMapperImpl implements BetMapper {
         if ( imageData1 != null ) {
             imageData = Arrays.copyOf( imageData1, imageData1.length );
         }
+        createdBy = userMapper.toDto( userMapper.toUser( ad.getCreatedBy() ) );
+        createdDate = toLocalDateTime( ad.getCreatedDate() );
 
-        AdDto adDto = new AdDto( title, description, minimalPrice, adStatus, category, imageData );
+        AdDto adDto = new AdDto( title, description, minimalPrice, adStatus, category, imageData, createdBy, createdDate );
 
         return adDto;
     }
