@@ -1,34 +1,22 @@
 server:
-  port: 8080
+  port: ${SERVER_PORT}
 
 spring:
   datasource:
-    driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: 1234
-    url: jdbc:postgresql://localhost:5432/test
-  messages:
-    basename: lang
-    use-code-as-default-message: true
-    encoding: UTF-8
+    driver-class-name: ${DATABASE_DRIVER}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    url: ${DATABASE_URL}
 
   jpa:
     generate-ddl: true
     show-sql: false
     properties:
       hibernate:
-        generate_statistics: true
+        generate_statistics: false
         format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQL95Dialect
+        dialect: ${DATABASE_DIALECT}
         enable_lazy_load_no_trans: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 
-application-name: Test task application
-title: Test task APIs for Red-Mad_Robot
-version: 0.1.0
-description: APIs description
-base-package: kz.rermadrobot.testtask.controller
-contact-name: Nodir Umarov
-contact-email: mr.umarov.1995@gmail.com
-git-url: https://github.com/NodirUmarov/test-task/tree/main
