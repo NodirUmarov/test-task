@@ -25,3 +25,7 @@ cors:
   allowed_methods: ${LIST_OF_METHODS}
   allowed_headers: ${LIST_OF_HEADERS}
   pattern: ${CORS_PATTERN}
+
+jwt:
+  secret: ${JWT_SECRET}
+  duration: ${JWT_DURATION}

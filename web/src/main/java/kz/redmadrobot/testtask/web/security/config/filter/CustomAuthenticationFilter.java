@@ -2,21 +2,28 @@ package kz.redmadrobot.testtask.web.security.config.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.stream.Collectors;
+import kz.redmadrobot.testtask.web.security.details.AuthenticationDetails;
 import kz.redmadrobot.testtask.web.security.details.AuthenticationDetailsService;
+import kz.redmadrobot.testtask.web.security.details.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -25,8 +32,18 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
     private final AuthenticationDetailsService authenticationDetailsService;
 
-    @Value("${jwt.secret}")
     private String secret;
+    private Long duration;
+
+    @Value("${jwt.secret}")
+    public void setSecret(String secret) {
+        this.secret = secret;
+    }
+
+    @Value("${jwt.duration}")
+    public void setDuration(Long duration) {
+        this.duration = duration;
+    }
 
     @Autowired
     public CustomAuthenticationFilter(@Lazy AuthenticationManager authenticationManager, AuthenticationDetailsService authenticationDetailsService) {
@@ -46,15 +63,39 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        UserDetails userDetails = (UserDetails) authResult.getPrincipal();
+        AuthenticationDetails details = (AuthenticationDetails) authResult.getPrincipal();
 
         Algorithm algorithm = Algorithm.HMAC256(secret);
 
-        String accessToken = JWT.create()
-                .withSubject(userDetails.getUsername())
+        String generatedAccessToken = JWT.create()
+                .withSubject(details.getUsername())
                 .withIssuedAt(new Date())
                 .withNotBefore(new Date())
+                .withIssuer(request.getRequestURL().toString())
+                .withExpiresAt(new Date(System.currentTimeMillis() + duration))
+                .withClaim("authorities", new ArrayList<>(details.getAuthorities()))
+                .withClaim("type_of_token", "access")
                 .sign(algorithm);
+
+        String refreshAccessToken = JWT.create()
+                .withSubject(details.getUsername())
+                .withIssuedAt(new Date())
+                .withNotBefore(new Date(System.currentTimeMillis() + duration))
+                .withIssuer(request.getRequestURL().toString())
+                .withExpiresAt(new Date(System.currentTimeMillis() + duration * 2))
+                .withClaim("authorities", new ArrayList<>(details.getAuthorities()))
+                .withClaim("type_of_token", "refresh")
+                .sign(algorithm);
+
+        TokenResponse tokenResponse = TokenResponse
+                .builder()
+                .accessToken(generatedAccessToken)
+                .refreshToken(refreshAccessToken)
+                .build();
+
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        new ObjectMapper()
+                .writeValue(response.getOutputStream(), tokenResponse);
 
     }
 
