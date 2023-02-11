@@ -6,4 +6,5 @@ import kz.redmadrobot.testtask.business.model.request.CreateUserRequest;
 public interface UserService {
     UserDto create(CreateUserRequest request);
     UserDto getOne(Long id);
+    UserDto getOneByEmail(String username);
 }

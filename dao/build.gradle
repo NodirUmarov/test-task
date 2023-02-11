@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-
+    implementation "org.springframework.data:spring-data-envers"
     api 'org.springframework.boot:spring-boot-starter-data-jpa'
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"

@@ -18,5 +18,10 @@ spring:
         dialect: ${DATABASE_DIALECT}
         enable_lazy_load_no_trans: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
 
+cors:
+  allowed_origins: ${LIST_OF_ORIGINS}
+  allowed_methods: ${LIST_OF_METHODS}
+  allowed_headers: ${LIST_OF_HEADERS}
+  pattern: ${CORS_PATTERN}

@@ -37,6 +37,11 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(userRepository.findById(id).orElseThrow(UserNotFoundException::new));
     }
 
+    @Override
+    public UserDto getOneByEmail(String username) {
+        log.info("Searching for user by name='{}'", username);
+        return userMapper.toDto(userRepository.findByEmail(username).orElseThrow(UserNotFoundException::new));
+    }
 
 
 }

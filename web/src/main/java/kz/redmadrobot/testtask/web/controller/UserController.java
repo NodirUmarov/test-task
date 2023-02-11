@@ -8,6 +8,7 @@ import kz.redmadrobot.testtask.web.model.UserResource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +23,7 @@ public class UserController {
 
     private final UserService userService;
     private final UserAssembler userAssembler;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getOne(@PathVariable Long id) {
@@ -30,7 +32,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserResource> create(@RequestBody CreateUserRequest request) {
+        request.setPassword(passwordEncoder.encode(request.getPassword()));
         return ResponseEntity.status(HttpStatus.CREATED).body(userAssembler.toModel(userService.create(request)));
     }
-
 }

@@ -2,11 +2,7 @@ package kz.redmadrobot.testtask.dao.entity.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,37 +22,18 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "tb_users")
-@AuditTable("tb_users_audit")
-public class User extends AbstractPersistable<Long> {
+@AuditTable("tb_roles_audit")
+public class Role extends AbstractPersistable<Long> {
 
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Column(nullable = false)
-    private String password;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
-    private Role role;
-
-    @Column
-    private String firstName;
-
-    @Column
-    private String lastName;
-
-    @Column
-    private String patronymic;
-
-    @Column
-    private LocalDate dob;
+    @Column(nullable = true, unique = true)
+    private String name;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        User user = (User) o;
-        return getId() != null && Objects.equals(getId(), user.getId());
+        Role role = (Role) o;
+        return getId() != null && Objects.equals(getId(), role.getId());
     }
 
     @Override

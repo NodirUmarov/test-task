@@ -8,4 +8,5 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ComponentScan(basePackages = "kz.redmadrobot.testtask.business", basePackageClasses = DaoConfig.class)
 public class BusinessConfig {
+
 }
