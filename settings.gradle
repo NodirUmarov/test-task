@@ -1,4 +1,5 @@
 rootProject.name = 'test-task'
-include 'dao'
 include 'business'
+include 'dao'
+include 'web'
 
